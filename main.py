@@ -6,9 +6,6 @@ import numpy as np
 if __name__ == '__main__':
     data = pd.read_csv("dataset_mood_smartphone.csv") # 376912 rows x 5 columns
     data = data.drop(data.columns[[0]], axis = 1)
-
-    print(data)
-
     newdf = sqldf("SELECT id, time FROM data") # 376912 rows x 2 columns
     #print(newdf)
 
@@ -25,8 +22,24 @@ if __name__ == '__main__':
                  new_col[i] = data.iloc[i]["value"]
 
          newdf[attr] = new_col
+    print(newdf.columns)
+    newdf.rename(columns = {'appCat.weather':'weather', 'appCat.social':'social', 'appCat.travel':'travel', 'appCat.finance':'finance',
+                            'circumplex.valence':'valence', 'appCat.utilities':'utilities', 'appCat.other':'other', 'appCat.communication':'communication',
+                            'appCat.game':'game', 'appCat.builtin':'builtin', 'appCat.office':'office', 'appCat.entertainment':'entertainment',
+                            'circumplex.arousal':'arousal','appCat.unknown':'unknown'}, inplace=True)
+    print(newdf.columns)
+    newdf['day'] = pd.to_datetime(newdf['time']).dt.date
 
-    print(newdf)
-    newdf.to_csv('newdf.csv')
-    #
+    print(sqldf("SELECT AVG(mood) as mood FROM newdf GROUP BY id, day"))
+    print(max(newdf['mood']))
+
+    donedf=sqldf("SELECT id, day, SUM(screen) as screen, SUM(call) as call, SUM(social) as social, SUM(sms) as sms, "
+                 "SUM(builtin) as builtin, SUM(utilities) as utilities, AVG(arousal) as arousal, "
+                 "SUM(finance) as finance, SUM(unknown) as unknown, AVG(valence) as valence, "
+                 "SUM(office) as office, AVG(activity) as activity, SUM(game) as game, SUM(entertainment) as entertainment, "
+                 "SUM(weather) as weather, SUM(communication) as communication, SUM(travel) as travel, "
+                 "SUM(other) as other, AVG(mood) as mood FROM newdf "
+                 "GROUP BY id, day")
+
+    donedf.to_csv('donedf.csv')
 
