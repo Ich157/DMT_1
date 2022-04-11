@@ -47,7 +47,7 @@ def get_done_df():
     donedf.to_csv('donedf.csv')
 
 
-def skip_start(start: object = "2014-03-20") -> object:
+def skip_start(start = "2014-03-20"):
 
     donedf = pd.read_csv("donedf.csv")
     donedf = donedf.drop(donedf.columns[[0]], axis=1)
