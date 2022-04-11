@@ -56,5 +56,16 @@ def skip_start(start = "2014-03-20"):
     skip_start.to_csv("skip_start.csv")
 
 
+def dropnans(df, columns):
+    for col in columns:
+        df[col] = df[col].fillna(0)
+
+    return df
+
 if __name__ == '__main__':
     skip_start = pd.read_csv("skip_start.csv")
+    to_drop = ["call", "sms", "utilities", "game", "unknown", "finance", "office", "weather", "travel"]
+    dropped_nan = dropnans(skip_start, to_drop)
+    print(dropped_nan.isnull().sum())
+    print(dropped_nan.shape)
+    dropped_nan.to_csv("dropped_nan.csv")
