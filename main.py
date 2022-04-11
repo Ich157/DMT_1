@@ -62,6 +62,22 @@ def dropnans(df, columns):
 
     return df
 
+def shift_mood(df):
+    ids = sqldf("SELECT DISTINCT id FROM df")
+    ids = ids["id"].astype(str).tolist()
+
+    patients = []
+
+    for id in ids:
+        patients.append(df[df['id'] == id])
+
+    list_shifted = []
+    for patient in patients:
+        patient['mood'] = patient['mood'].shift(-1)
+        patient = patient[:-1]
+        list_shifted.append(patient)
+        return pd.concat(list_shifted)
+
 if __name__ == '__main__':
     skip_start = pd.read_csv("skip_start.csv")
     to_drop = ["call", "sms", "utilities", "game", "unknown", "finance", "office", "weather", "travel"]
@@ -69,3 +85,5 @@ if __name__ == '__main__':
     print(dropped_nan.isnull().sum())
     print(dropped_nan.shape)
     dropped_nan.to_csv("dropped_nan.csv")
+    shifted = shift_mood(dropped_nan)
+    shifted.to_csv("shifted.csv")
