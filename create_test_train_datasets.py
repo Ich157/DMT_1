@@ -1,8 +1,10 @@
 import pandas as pd
 from pandasql import sqldf
 import numpy as np
+from sklearn.utils import shuffle
 
 data = pd.read_csv("dropped_nan.csv")
+bool_shuffel = True
 
 ids = sqldf("SELECT DISTINCT id FROM data")
 ids = ids["id"].astype(str).tolist()
@@ -15,6 +17,8 @@ for id in ids:
 list_train = []
 list_test = []
 for patient in patients:
+    if(bool_shuffel):
+        patient = shuffle(patient)
     list_train.append(patient[:int(len(patient) / 2)])
     list_test.append(patient[int(len(patient) / 2):])
 
