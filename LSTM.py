@@ -28,12 +28,12 @@ class LSTMnet(nn.Module):
 
 
     def forward(self, input):
-        print(input.shape)
-        print(self.input_shape)
+        #print(input.shape)
+        #print(self.input_shape)
 
         assert input.shape == self.input_shape
         lstmd, (_,_) = self.layer1(input)
-        print(lstmd.shape)
+        #print(lstmd.shape)
         prediction = self.layer2(lstmd)
 
         return prediction
@@ -47,12 +47,12 @@ def train(model, epochs: int, lr, batches):
            ts = time.perf_counter()
 
            for i, (x, y) in enumerate(batches):
-               print(x.shape)
+               #print(x.shape)
                x = x.reshape(model.input_shape)
-               print(x.shape)
+               #print(x.shape)
                optimizer.zero_grad()
                out = model(x.float())
-               loss = criterion(out, y.type(torch.float32))
+               loss = criterion(out.flatten(), y.type(torch.float32))
 
                loss.backward()
                optimizer.step()
@@ -60,7 +60,7 @@ def train(model, epochs: int, lr, batches):
                running_loss += loss.item()
 
                data.append({'update': i, 'epoch': epoch, 'loss': loss.item()})
-               print(loss.item())
+               #print(loss.item())
             #logging.info(f'Epoch took: {time.perf_counter() - ts:.2f}s')
         #logging.info(f'Finished training. {epochs} epochs took: {time.perf_counter() - ts_train:.2f}s')
         return data
@@ -70,27 +70,31 @@ def main():
 
     print(LSTM)
 
-    data = pd.read_csv("dropped_nan.csv")
+    data = pd.read_csv("shifted.csv")
 
-    morenans = ["valence", "activity", "entertainment", "communication", "other", "mood", "social", "builtin", "screen","arousal"]
-    data = dropnans(data, morenans)
+    print(data.isnull().sum())
+    #morenans = ["valence", "activity", "entertainment", "communication", "other", "mood", "social", "builtin", "screen","arousal"]
+    #data = dropnans(data, morenans)
 
-    #print(data.isnull().sum())
+    # [id,day,screen,call,social,sms,builtin,utilities,arousal,finance,unknown,valence,office,activity,game,entertainment,weather,communication,travel,other,mood]
+    print(data.isnull().sum())
     #print(data["screen"].shape)
-    x = torch.from_numpy(np.vstack((data["screen"], data["call"], data["social"], data["sms"])).T)
-    #print(x.shape)
+    train_data = data.drop(labels = ["id","day", "mood", "Unnamed: 0.1", "Unnamed: 0"], axis=1)
+    print(train_data.dtypes)
+    x = torch.tensor(train_data.values)
+    print("x.shape = ", x.shape)
     print(x.dtype)
     y = torch.from_numpy(np.array(data["mood"]))
     y = y[None, :].T
 
-    print(y.dtype)
+    print(y.shape)
 
     batches = []
-    batches.extend(list(zip(x,y)))
+    #batches.extend(list(zip(x,y)))
     #print(batches)
 
-    data = train(LSTM, 10, 0.05, batches)
-
+    data = train(LSTM, 50, 0.05, batches)
+"""""
     df = pd.DataFrame(data)
     df['epoch'] = df['epoch'] + 1
 
@@ -98,6 +102,6 @@ def main():
     df.groupby(by='epoch').mean()['loss'].plot()
     plt.ylabel('loss')
     plt.show()
-
+"""""
 
 main()
