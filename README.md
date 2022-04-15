@@ -32,4 +32,7 @@ Variables to add:
 -	Entertainment: affects mood. Period.
 -	Communication: 
 -	Weather: see study (but yeah I know its just the weather app usage but if someone uses it then it can have an effect on the mood because they see if weather is     bad/good and then…)
+
+
+
 Drop: unknown, utilities, other (because we don’t know what these apps really are and so don’t know how we can interpret the effect of these apps on the mood); finance: to much data missing (or nobody uses them) (discuss!!!)
