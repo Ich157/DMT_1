@@ -81,6 +81,16 @@ def shift_mood(df):
 def drop_mood_nan(df):
     return df[df['mood'].notna()]
 
+def fill_nan(df):
+    mean_activity = df["activity"].mean()
+    df["activity"].fillna(mean_activity)
+    mean_arousal = df["arousal"].mean()
+    df["arousal"].fillna(mean_arousal)
+    mean_valence = df["valence"].mean()
+    df["valence"].fillna(mean_valence)
+    return df.fillna(0)
+
+
 if __name__ == '__main__':
     skip_start = pd.read_csv("skip_start.csv")
     to_drop = ["call", "sms", "utilities", "game", "unknown", "finance", "office", "weather", "travel"]
@@ -92,3 +102,5 @@ if __name__ == '__main__':
     shifted.to_csv("shifted.csv")
     dropped_mood_nan = drop_mood_nan(shifted)
     dropped_mood_nan.to_csv("dropped_mood_nan.csv")
+    filled_nan = fill_nan(dropped_mood_nan)
+    filled_nan.to_csv("filled_nan.csv")

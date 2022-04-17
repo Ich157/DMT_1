@@ -5,8 +5,6 @@ import pandas as pd
 model = KNeighborsRegressor(n_neighbors=2)
 train = pd.read_csv("train.csv")
 test = pd.read_csv("test.csv")
-train = train.dropna()
-test = test.dropna()
 print(len(train))
 print(len(test))
 train_X = train[["activity","screen","valence","arousal","office","game","call","sms","social","entertainment","communication","weather"]]
