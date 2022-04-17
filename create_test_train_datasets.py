@@ -3,7 +3,7 @@ from pandasql import sqldf
 import numpy as np
 from sklearn.utils import shuffle
 
-data = pd.read_csv("dropped_nan.csv")
+data = pd.read_csv("dropped_mood_nan.csv")
 bool_shuffel = True
 
 ids = sqldf("SELECT DISTINCT id FROM data")

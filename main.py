@@ -76,7 +76,10 @@ def shift_mood(df):
         patient['mood'] = patient['mood'].shift(-1)
         patient = patient[:-1]
         list_shifted.append(patient)
-        return pd.concat(list_shifted)
+    return pd.concat(list_shifted)
+
+def drop_mood_nan(df):
+    return df[df['mood'].notna()]
 
 if __name__ == '__main__':
     skip_start = pd.read_csv("skip_start.csv")
@@ -87,3 +90,5 @@ if __name__ == '__main__':
     dropped_nan.to_csv("dropped_nan.csv")
     shifted = shift_mood(dropped_nan)
     shifted.to_csv("shifted.csv")
+    dropped_mood_nan = drop_mood_nan(shifted)
+    dropped_mood_nan.to_csv("dropped_mood_nan.csv")
