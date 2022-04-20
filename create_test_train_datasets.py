@@ -3,7 +3,7 @@ from pandasql import sqldf
 import numpy as np
 from sklearn.utils import shuffle
 
-data = pd.read_csv("filled_nan.csv")
+data = pd.read_csv("normalised.csv")
 bool_shuffel = True
 
 ids = sqldf("SELECT DISTINCT id FROM data")
@@ -19,11 +19,11 @@ list_test = []
 for patient in patients:
     if(bool_shuffel):
         patient = shuffle(patient)
-    list_train.append(patient[:int(len(patient) / 2)])
-    list_test.append(patient[int(len(patient) / 2):])
+    list_train.append(patient[:int(len(patient) *2/3)])
+    list_test.append(patient[int(len(patient) *2/3):])
 
 train = pd.concat(list_train)
 test = pd.concat(list_test)
 
-train.to_csv("train.csv")
-test.to_csv("test.csv")
+train.to_csv("train_shuffeld.csv")
+test.to_csv("test_shuffeld.csv")

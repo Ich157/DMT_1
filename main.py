@@ -90,6 +90,37 @@ def fill_nan(df):
     df["valence"].fillna(mean_valence)
     return df.fillna(0)
 
+def drop_columns(df):
+    return df[["id","day","activity","screen","valence","arousal","office","game","call","sms","social","entertainment","communication","weather","mood"]]
+
+def relation_to_scrreen(df):
+    df["office"] = df["office"]/df["screen"]
+    df["game"] = df["game"]/df["screen"]
+    df["social"] = df["social"]/df["screen"]
+    df["entertainment"] = df["entertainment"]/df["screen"]
+    df["communication"] = df["communication"]/df["screen"]
+    df["weather"] = df["weather"]/df["screen"]
+
+    return df
+
+def normalise(df):
+    ids = sqldf("SELECT DISTINCT id FROM df")
+    ids = ids["id"].astype(str).tolist()
+
+    patients = []
+
+    for id in ids:
+        patients.append(df[df['id'] == id])
+
+    list_normalised = []
+
+    for patient in patients:
+        patient["screen"] = patient["screen"]/(patient["screen"].max())
+        patient["call"] = patient["call"]/(patient["call"].max())
+        patient["sms"] = patient["sms"] / (patient["sms"].max())
+        list_normalised.append(patient)
+
+    return pd.concat(list_normalised)
 
 if __name__ == '__main__':
     skip_start = pd.read_csv("skip_start.csv")
@@ -104,3 +135,9 @@ if __name__ == '__main__':
     dropped_mood_nan.to_csv("dropped_mood_nan.csv")
     filled_nan = fill_nan(dropped_mood_nan)
     filled_nan.to_csv("filled_nan.csv")
+    dropped_columns = drop_columns(filled_nan)
+    dropped_columns.to_csv("dropped_columns")
+    relation = relation_to_scrreen(dropped_columns)
+    relation.to_csv("relation.csv")
+    normalised = normalise(relation)
+    normalised.to_csv("normalised.csv")
