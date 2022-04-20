@@ -138,7 +138,6 @@ if __name__ == '__main__':
     dropped_columns = drop_columns(filled_nan)
     dropped_columns.to_csv("dropped_columns.csv")
     relation = relation_to_scrreen(dropped_columns)
-    relation = relation.round(6)
     relation.to_csv("relation.csv")
     normalised = normalise(relation)
     print(len(normalised))

@@ -1,0 +1,1 @@
+criterion = 'absolute_error', splitter='random', max_depth=8, min_samples_leaf=19, min_weight_fraction_leaf=0.1, max_feature='log2', max_leaf_node=20, min_impurity_decrease=0.0, 60, 0.5167082244389027
