@@ -4,7 +4,7 @@ import numpy as np
 from sklearn.utils import shuffle
 
 data = pd.read_csv("normalised.csv")
-bool_shuffel = True
+bool_shuffel = False
 
 ids = sqldf("SELECT DISTINCT id FROM data")
 ids = ids["id"].astype(str).tolist()
@@ -25,5 +25,5 @@ for patient in patients:
 train = pd.concat(list_train)
 test = pd.concat(list_test)
 
-train.to_csv("train_shuffeld.csv")
-test.to_csv("test_shuffeld.csv")
+train.to_csv("train.csv")
+test.to_csv("test.csv")

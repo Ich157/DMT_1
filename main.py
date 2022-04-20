@@ -94,14 +94,14 @@ def drop_columns(df):
     return df[["id","day","activity","screen","valence","arousal","office","game","call","sms","social","entertainment","communication","weather","mood"]]
 
 def relation_to_scrreen(df):
-    df["office"] = df["office"]/df["screen"]
-    df["game"] = df["game"]/df["screen"]
-    df["social"] = df["social"]/df["screen"]
-    df["entertainment"] = df["entertainment"]/df["screen"]
-    df["communication"] = df["communication"]/df["screen"]
-    df["weather"] = df["weather"]/df["screen"]
+    df["office"] = df["office"].div(df["screen"].values)
+    df["game"] = df["game"].div(df["screen"].values)
+    df["social"] = df["social"].div(df["screen"].values)
+    df["entertainment"] = df["entertainment"].div(df["screen"].values)
+    df["communication"] = df["communication"].div(df["screen"].values)
+    df["weather"] = df["weather"].div(df["screen"].values)
 
-    return df
+    return df.fillna(0)
 
 def normalise(df):
     ids = sqldf("SELECT DISTINCT id FROM df")
@@ -115,9 +115,9 @@ def normalise(df):
     list_normalised = []
 
     for patient in patients:
-        patient["screen"] = patient["screen"]/(patient["screen"].max())
-        patient["call"] = patient["call"]/(patient["call"].max())
-        patient["sms"] = patient["sms"] / (patient["sms"].max())
+        patient["screen"] = patient["screen"]/np.nanmax(patient["screen"])
+        patient["call"] = patient["call"]/np.nanmax(patient["call"])
+        patient["sms"] = patient["sms"] / np.nanmax(patient["sms"])
         list_normalised.append(patient)
 
     return pd.concat(list_normalised)
@@ -136,8 +136,13 @@ if __name__ == '__main__':
     filled_nan = fill_nan(dropped_mood_nan)
     filled_nan.to_csv("filled_nan.csv")
     dropped_columns = drop_columns(filled_nan)
-    dropped_columns.to_csv("dropped_columns")
+    dropped_columns.to_csv("dropped_columns.csv")
     relation = relation_to_scrreen(dropped_columns)
+    relation = relation.round(6)
     relation.to_csv("relation.csv")
     normalised = normalise(relation)
+    print(len(normalised))
+    normalised = normalised.replace([np.inf,-np.inf],np.nan)
+    normalised = normalised.dropna()
+    print(len(normalised))
     normalised.to_csv("normalised.csv")
