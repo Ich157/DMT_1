@@ -4,6 +4,10 @@ import numpy as np
 from sklearn.utils import shuffle
 
 data = pd.read_csv("normalised.csv")
+data = data.replace({'AS14.': ''}, regex=True)
+data["day"] = pd.to_datetime(data["day"])
+data["day"] = data["day"].apply(lambda x: x.toordinal())-735313
+print(data)
 bool_shuffel = False
 
 ids = sqldf("SELECT DISTINCT id FROM data")
